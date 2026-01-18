@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="pageTitle">Artigo | Imap One Blog</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+    
+    <!-- Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <style>
+        :root {
+            --primary: #D4AF37;
+            --primary-hover: #b8941e;
+            --dark: #121212;
+            --dark-gray: #181818;
+            --text-gray: #666666;
+            --white: #FFFFFF;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: var(--white);
+            color: #333;
+            line-height: 1.8;
+        }
+
+        /* HEADER */
+        header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 1.5rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            background: rgba(255, 255, 255, 0.98);
+            border-bottom: 1px solid #eee;
+            backdrop-filter: blur(10px);
+        }
+
+        .logo { 
+            font-size: 1.2rem; 
+            font-weight: 700; 
+            letter-spacing: 3px; 
+            color: var(--dark); 
+            text-transform: uppercase; 
+        }
+        .logo span { color: var(--primary); }
+
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.8rem 1.5rem;
+            background: var(--primary);
+            color: #000;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+            border-radius: 30px;
+            transition: 0.3s;
+            text-decoration: none;
+        }
+        .back-btn:hover {
+            background: var(--primary-hover);
+            transform: translateX(-5px);
+        }
+
+        /* HERO DO ARTIGO */
+        .article-hero {
+            margin-top: 80px;
+            height: 60vh;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .article-hero img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .article-hero-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 3rem 5%;
+            background: linear-gradient(transparent, rgba(0,0,0,0.8));
+            color: white;
+        }
+
+        .article-category {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            background: var(--primary);
+            color: #000;
+            font-weight: 600;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 1rem;
+            border-radius: 3px;
+        }
+
+        .article-hero h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 3.5rem;
+            line-height: 1.2;
+            margin-bottom: 1rem;
+        }
+
+        .article-meta {
+            display: flex;
+            gap: 2rem;
+            font-size: 0.9rem;
+            color: rgba(255,255,255,0.8);
+        }
+
+        /* CONTEÚDO */
+        .article-content {
+            max-width: 800px;
+            margin: 4rem auto;
+            padding: 0 5%;
+            font-size: 1.1rem;
+            color: #333;
+        }
+
+        .article-content p {
+            margin-bottom: 1.5rem;
+            line-height: 1.9;
+        }
+
+        .article-content h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            margin-top: 3rem;
+            margin-bottom: 1.5rem;
+            color: var(--dark);
+        }
+
+        .article-content h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            color: var(--dark);
+        }
+
+        .article-content ul, .article-content ol {
+            margin-left: 2rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .article-content li {
+            margin-bottom: 0.8rem;
+        }
+
+        .article-content blockquote {
+            border-left: 4px solid var(--primary);
+            padding-left: 2rem;
+            margin: 2rem 0;
+            font-style: italic;
+            color: var(--text-gray);
+            font-size: 1.2rem;
+        }
+
+        .article-content img {
+            width: 100%;
+            height: auto;
+            border-radius: 8px;
+            margin: 2rem 0;
+        }
+
+        /* LOADING */
+        .loading-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 60vh;
+            gap: 1rem;
+        }
+
+        .loading-container i {
+            font-size: 3rem;
+            color: var(--primary);
+        }
+
+        /* COMPARTILHAR */
+        .share-section {
+            max-width: 800px;
+            margin: 3rem auto;
+            padding: 2rem;
+            background: #f8f8f8;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .share-section h3 {
+            font-family: 'Playfair Display', serif;
+            margin-bottom: 1rem;
+        }
+
+        .share-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .share-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.8rem 1.5rem;
+            border-radius: 30px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: 0.3s;
+        }
+
+        .share-btn.whatsapp { background: #25D366; color: white; }
+        .share-btn.whatsapp:hover { background: #1da851; }
+
+        .share-btn.facebook { background: #1877F2; color: white; }
+        .share-btn.facebook:hover { background: #145dbf; }
+
+        .share-btn.linkedin { background: #0A66C2; color: white; }
+        .share-btn.linkedin:hover { background: #084d8f; }
+
+        /* FOOTER */
+        footer { 
+            background: #050505; 
+            padding: 3rem 5% 1.5rem; 
+            text-align: center; 
+            color: #999;
+            border-top: 1px solid #222;
+        }
+
+        footer p { margin: 0; }
+
+        #lang-toggle:hover { 
+            background: #D4AF37; 
+            color: #000; 
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            .article-hero h1 { font-size: 2rem; }
+            .article-content { font-size: 1rem; }
+            .back-btn { font-size: 0.75rem; padding: 0.6rem 1.2rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <a href="index.html" class="logo">IMAP<span>ONE</span></a>
+        <div style="display: flex; gap: 1rem; align-items: center;">
+            <div id="lang-toggle" onclick="toggleLanguage()" style="width: 40px; height: 40px; border: 1px solid #D4AF37; color: #D4AF37; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.75rem; cursor: pointer; transition: all 0.3s ease; background: transparent;">PT</div>
+            <a href="index.html" class="back-btn">
+                <i class="fas fa-arrow-left"></i> <span id="btnBack">Voltar ao Blog</span>
+            </a>
+        </div>
+    </header>
+
+    <div id="articleContainer">
+        <div class="loading-container">
+            <i class="fas fa-spinner fa-spin"></i>
+            <p>Carregando artigo...</p>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2025 Imap One. Todos os direitos reservados.</p>
+    </footer>
+
+    <script>
+        // SUPABASE CONFIG
+        const SUPABASE_URL = 'https://isbiaabccbpydkifexwy.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlzYmlhYWJjY2JweWRraWZleHd5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA0NTUxMzgsImV4cCI6MjA3NjAzMTEzOH0.z__PYEHlpT2JO-3db-_sb0O9cFnMWdoye_X0gcaV7mc';
+        
+        const { createClient } = supabase;
+        const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        let currentLang = 'pt';
+        let currentArticle = null; // Armazena o artigo carregado
+
+        // PEGAR SLUG DA URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const slug = urlParams.get('slug');
+
+        if (!slug) {
+            window.location.href = 'index.html';
+        }
+
+        // CARREGAR ARTIGO
+        async function loadArticle() {
+            try {
+                const { data: article, error } = await supabaseClient
+                    .from('articles')
+                    .select('*')
+                    .eq('slug', slug)
+                    .single();
+
+                if (error || !article) {
+                    throw new Error('Artigo não encontrado');
+                }
+
+                // Armazena o artigo para tradução
+                currentArticle = article;
+
+                // ✅ INCREMENTAR VISUALIZAÇÃO AUTOMATICAMENTE
+                await incrementView(article.id, article.views || 0);
+
+                renderArticle(article);
+
+            } catch (error) {
+                console.error('Erro:', error);
+                document.getElementById('articleContainer').innerHTML = `
+                    <div class="loading-container">
+                        <i class="fas fa-exclamation-triangle" style="color: #dc3545;"></i>
+                        <h2>Artigo não encontrado</h2>
+                        <p>O artigo que você procura não existe ou foi removido.</p>
+                        <a href="index.html" class="back-btn" style="margin-top: 1rem;">Voltar ao Blog</a>
+                    </div>
+                `;
+            }
+        }
+
+        // ✅ INCREMENTAR VISUALIZAÇÃO
+        async function incrementView(articleId, currentViews) {
+            try {
+                await supabaseClient
+                    .from('articles')
+                    .update({ views: currentViews + 1 })
+                    .eq('id', articleId);
+            } catch (error) {
+                console.error('Erro ao incrementar view:', error);
+            }
+        }
+
+        // RENDERIZAR ARTIGO
+        function renderArticle(article) {
+            const title = currentLang === 'pt' ? article.title_pt : article.title_en;
+            const content = currentLang === 'pt' ? article.content_pt : article.content_en;
+            const category = currentLang === 'pt' ? article.category_pt : article.category_en;
+            const date = new Date(article.published_date).toLocaleDateString('pt-BR', {
+                day: 'numeric',
+                month: 'long',
+                year: 'numeric'
+            });
+
+            // Atualiza título da página
+            document.getElementById('pageTitle').textContent = `${title} | Imap One Blog`;
+
+            const container = document.getElementById('articleContainer');
+            container.innerHTML = `
+                <section class="article-hero">
+                    <img src="${article.image_url}" alt="${title}">
+                    <div class="article-hero-overlay">
+                        <span class="article-category">${category}</span>
+                        <h1>${title}</h1>
+                        <div class="article-meta">
+                            <span><i class="far fa-calendar"></i> ${date}</span>
+                            <span><i class="far fa-clock"></i> ${article.read_time} min de leitura</span>
+                        </div>
+                    </div>
+                </section>
+
+                <article class="article-content">
+                    ${formatContent(content)}
+                </article>
+
+                <div class="share-section">
+                    <h3>Compartilhe este artigo</h3>
+                    <div class="share-buttons">
+                        <a href="https://wa.me/?text=${encodeURIComponent(title + ' - ' + window.location.href)}" target="_blank" class="share-btn whatsapp">
+                            <i class="fab fa-whatsapp"></i> WhatsApp
+                        </a>
+                        <a href="https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.href)}" target="_blank" class="share-btn facebook">
+                            <i class="fab fa-facebook"></i> Facebook
+                        </a>
+                        <a href="https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(window.location.href)}" target="_blank" class="share-btn linkedin">
+                            <i class="fab fa-linkedin"></i> LinkedIn
+                        </a>
+                    </div>
+                </div>
+            `;
+        }
+
+        // FORMATAR CONTEÚDO (converte quebras de linha em parágrafos)
+        function formatContent(content) {
+            // Se o conteúdo já tem tags HTML, retorna direto
+            if (content.includes('<p>') || content.includes('<h2>')) {
+                return content;
+            }
+
+            // Senão, converte quebras de linha em parágrafos
+            return content
+                .split('\n\n')
+                .filter(p => p.trim())
+                .map(p => `<p>${p.trim()}</p>`)
+                .join('');
+        }
+
+        // ✅ TRADUÇÃO
+        const translations = {
+            en: {
+                btnBack: "Back to Blog"
+            }
+        };
+
+        function toggleLanguage() {
+            const btn = document.getElementById('lang-toggle');
+            
+            if (currentLang === 'pt') {
+                currentLang = 'en';
+                btn.textContent = 'EN';
+                
+                // Traduz botão
+                document.getElementById('btnBack').textContent = translations.en.btnBack;
+                
+                // Recarrega artigo no idioma novo
+                if (currentArticle) {
+                    renderArticle(currentArticle);
+                }
+            } else {
+                window.location.reload();
+            }
+        }
+
+        // INICIALIZAR
+        loadArticle();
+    </script>
+</body>
+</html>

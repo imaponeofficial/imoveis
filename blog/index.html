@@ -8,6 +8,9 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    
+    <!-- Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
     <style>
         /* === PADRONIZAÇÃO VISUAL === */
@@ -31,7 +34,6 @@
             color: var(--light);
             overflow-x: hidden;
             line-height: 1.6;
-            overflow-x: hidden;
         }
 
         h1, h2, h3, h4, h5 {
@@ -42,7 +44,7 @@
         a { text-decoration: none; transition: 0.3s; color: inherit; }
         ul { list-style: none; }
 
-        /* === HEADER TRANSPARENTE (IGUAL AO MAIN) === */
+        /* === HEADER === */
         header {
             position: fixed;
             top: 0;
@@ -52,15 +54,13 @@
             justify-content: space-between;
             align-items: center;
             z-index: 1000;
-            /* Fundo degradê transparente inicial */
             background: linear-gradient(to bottom, rgba(0,0,0,0.9), transparent);
             transition: 0.4s;
         }
 
-        /* Estado ao rolar a página */
         header.scrolled {
             padding: 1rem 5%;
-            background: rgba(18, 18, 18, 0.98); /* Fundo sólido */
+            background: rgba(18, 18, 18, 0.98);
             border-bottom: 1px solid rgba(212, 175, 55, 0.1);
             backdrop-filter: blur(10px);
         }
@@ -68,7 +68,6 @@
         .logo { font-size: 1.2rem; font-weight: 700; letter-spacing: 3px; color: var(--white); text-transform: uppercase; }
         .logo span { color: var(--primary); }
 
-        /* Menu Desktop */
         nav { display: flex; gap: 2.5rem; align-items: center; }
         nav a { font-size: 0.85rem; font-weight: 500; text-transform: uppercase; letter-spacing: 1px; color: #ccc; transition: 0.3s; }
         nav a:hover, nav a.active { color: var(--primary); }
@@ -80,14 +79,12 @@
         .btn-gold { background: var(--primary); color: #000; border: 1px solid var(--primary); }
         .btn-gold:hover { background: transparent; color: var(--primary); }
 
-        /* === CONTROLES DO HEADER (IDIOMA + HAMBURGUER) === */
         .header-controls {
             display: flex;
             align-items: center;
             gap: 1rem;
         }
 
-        /* Botão de Idioma */
         #lang-toggle {
             width: 40px;
             height: 40px;
@@ -105,7 +102,6 @@
         }
         #lang-toggle:hover { background: var(--primary); color: #000; }
 
-        /* Hambúrguer */
         .hamburger { 
             display: none; 
             font-size: 1.5rem; 
@@ -115,14 +111,12 @@
         }
         .hamburger:hover { color: var(--primary); }
 
-        /* === HERO BLOG === */
+        /* === HERO === */
         .hero-blog {
             height: 50vh;
-            /* Degradê sobre a imagem para o texto ficar legível */
             background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.7)), 
                         url('https://images.unsplash.com/photo-1499750310107-5fef28a66643?w=1920&q=80') center/cover;
             display: flex; align-items: center; justify-content: center; text-align: center;
-            /* Removido margin-top fixo para funcionar com o header transparente */
             padding-top: 80px; 
         }
         .hero-content { max-width: 800px; padding: 0 2rem; }
@@ -140,20 +134,21 @@
         /* === DESTAQUE === */
         .destaque-section { background: var(--dark-gray); }
         .destaque-grid { display: grid; grid-template-columns: 1.5fr 1fr; gap: 2rem; align-items: center; }
-        .destaque-image { width: 100%; height: 500px; overflow: hidden; border-radius: 4px; }
+        .destaque-image { width: 100%; height: 500px; overflow: hidden; border-radius: 4px; cursor: pointer; }
         .destaque-image img { width: 100%; height: 100%; object-fit: cover; transition: 0.6s; }
         .destaque-image:hover img { transform: scale(1.05); }
         .destaque-content { padding: 2rem; }
         .destaque-meta { display: flex; gap: 2rem; margin-bottom: 1.5rem; font-size: 0.85rem; color: var(--text-gray); }
-        .destaque-content h2 { font-size: 2.2rem; margin-bottom: 1.5rem; line-height: 1.3; }
+        .destaque-content h2 { font-size: 2.2rem; margin-bottom: 1.5rem; line-height: 1.3; cursor: pointer; }
+        .destaque-content h2:hover { color: var(--primary); }
         .destaque-content p { color: var(--text-gray); line-height: 1.6; margin-bottom: 2rem; font-size: 1rem; }
-        .read-more { color: var(--primary); font-weight: 600; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; display: inline-flex; align-items: center; gap: 0.5rem; }
+        .read-more { color: var(--primary); font-weight: 600; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; display: inline-flex; align-items: center; gap: 0.5rem; cursor: pointer; }
         .read-more:hover { gap: 1rem; }
 
         /* === ARTIGOS === */
         .artigos-section { background: var(--dark); }
         .blog-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 2.5rem; }
-        .blog-card { background: var(--dark-gray); border-radius: 4px; overflow: hidden; transition: 0.4s; border: 1px solid rgba(255,255,255,0.05); }
+        .blog-card { background: var(--dark-gray); border-radius: 4px; overflow: hidden; transition: 0.4s; border: 1px solid rgba(255,255,255,0.05); cursor: pointer; }
         .blog-card:hover { transform: translateY(-8px); border-color: var(--primary); }
         .blog-image { width: 100%; height: 250px; overflow: hidden; }
         .blog-image img { width: 100%; height: 100%; object-fit: cover; transition: 0.6s; }
@@ -164,6 +159,25 @@
         .blog-content p { color: var(--text-gray); line-height: 1.6; margin-bottom: 1.5rem; font-size: 0.9rem; }
         .blog-link { color: var(--primary); font-weight: 600; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; display: inline-flex; align-items: center; gap: 0.5rem; }
         .blog-link:hover { gap: 1rem; }
+
+        /* === LOADING === */
+        .loading {
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-gray);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 5rem 2rem;
+            color: var(--text-gray);
+        }
+
+        .empty-state i {
+            font-size: 4rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
 
         /* === NEWSLETTER === */
         .newsletter-section { background: linear-gradient(135deg, var(--primary-hover), var(--primary)); padding: 6rem 5%; text-align: center; }
@@ -203,7 +217,6 @@
             .newsletter-form { flex-direction: column; }
         }
 
-        /* MENU MOBILE ATIVO */
         nav.mobile-active {
             display: flex; flex-direction: column; position: fixed; top: 70px; left: 0; right: 0;
             background: rgba(18, 18, 18, 0.98); padding: 2rem; gap: 1.5rem;
@@ -246,24 +259,8 @@
         </div>
     </section>
 
-    <section class="destaque-section">
-        <div class="destaque-grid">
-            <div class="destaque-image" data-aos="fade-right">
-                <img src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800&q=80" alt="Preá">
-            </div>
-            <div class="destaque-content" data-aos="fade-left">
-                <div class="destaque-meta">
-                    <span><i class="far fa-calendar"></i> 15 Jan 2025</span>
-                    <span data-i18n="cat-market"><i class="far fa-folder"></i> Mercado</span>
-                    <span><i class="far fa-clock"></i> 8 min</span>
-                </div>
-                <h2 data-i18n="feat-title">Preá: A Nova Pérola do Litoral Cearense</h2>
-                <p data-i18n="feat-text">Descubra por que Preá está se tornando o destino preferido de investidores nacionais e internacionais. Com crescimento acelerado, infraestrutura em desenvolvimento e natureza preservada, a região se consolida como uma das melhores oportunidades de investimento do Nordeste.</p>
-                <a href="#" class="read-more" data-i18n="btn-read">
-                    Ler Artigo Completo <i class="fas fa-arrow-right"></i>
-                </a>
-            </div>
-        </div>
+    <section class="destaque-section" id="featuredSection" style="display: none;">
+        <!-- Será preenchido dinamicamente -->
     </section>
 
     <section class="artigos-section">
@@ -273,145 +270,11 @@
             <div class="divider"></div>
         </div>
 
-        <div class="blog-grid">
-            <div class="blog-card" data-aos="fade-up" data-aos-delay="100">
-                <div class="blog-image">
-                    <img src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=800&q=80" alt="Investimento">
-                </div>
-                <div class="blog-content">
-                    <div class="blog-meta">
-                        <span>10 Jan 2025</span>
-                        <span data-i18n="cat-invest">Investimento</span>
-                    </div>
-                    <h4 data-i18n="art-1-t">Guia Completo: Como Investir em Terrenos Litorâneos</h4>
-                    <p data-i18n="art-1-d">Tudo que você precisa saber antes de investir em imóveis no litoral do Ceará. Análise de documentação, localização, infraestrutura e muito mais.</p>
-                    <a href="#" class="blog-link" data-i18n="btn-read">Ler Mais <i class="fas fa-arrow-right"></i></a>
-                </div>
+        <div id="articlesGrid" class="blog-grid">
+            <div class="loading">
+                <i class="fas fa-spinner fa-spin" style="font-size: 2rem; color: var(--primary);"></i>
+                <p style="margin-top: 1rem;">Carregando artigos...</p>
             </div>
-
-            <div class="blog-card" data-aos="fade-up" data-aos-delay="200">
-                <div class="blog-image">
-                    <img src="https://images.unsplash.com/photo-1502933691298-84fc14542831?w=800&q=80" alt="Jericoacoara">
-                </div>
-                <div class="blog-content">
-                    <div class="blog-meta">
-                        <span>05 Jan 2025</span>
-                        <span data-i18n="cat-life">Lifestyle</span>
-                    </div>
-                    <h4 data-i18n="art-2-t">Viver em Jeri: Mais que um Sonho Possível</h4>
-                    <p data-i18n="art-2-d">Conheça histórias de quem trocou a cidade grande pela tranquilidade do litoral e descobriu um novo estilo de vida.</p>
-                    <a href="#" class="blog-link" data-i18n="btn-read">Ler Mais <i class="fas fa-arrow-right"></i></a>
-                </div>
-            </div>
-
-            <div class="blog-card" data-aos="fade-up" data-aos-delay="300">
-                <div class="blog-image">
-                    <img src="https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=800&q=80" alt="Aeroporto">
-                </div>
-                <div class="blog-content">
-                    <div class="blog-meta">
-                        <span>28 Dez 2024</span>
-                        <span data-i18n="cat-market">Mercado</span>
-                    </div>
-                    <h4 data-i18n="art-3-t">Aeroporto de Jeri: Impactos no Mercado Imobiliário</h4>
-                    <p data-i18n="art-3-d">Como a ampliação do aeroporto regional está impulsionando a valorização de imóveis em toda a Rota das Emoções.</p>
-                    <a href="#" class="blog-link" data-i18n="btn-read">Ler Mais <i class="fas fa-arrow-right"></i></a>
-                </div>
-            </div>
-
-            <div class="blog-card" data-aos="fade-up" data-aos-delay="400">
-                <div class="blog-image">
-                    <img src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800&q=80" alt="Energia">
-                </div>
-                <div class="blog-content">
-                    <div class="blog-meta">
-                        <span>20 Dez 2024</span>
-                        <span data-i18n="cat-market">Mercado</span>
-                    </div>
-                    <h4 data-i18n="art-4-t">Energia Renovável Atrai Investidores para a Região</h4>
-                    <p data-i18n="art-4-d">Os parques eólicos e solares estão transformando o Ceará em polo de energia limpa e aquecendo o mercado imobiliário.</p>
-                    <a href="#" class="blog-link" data-i18n="btn-read">Ler Mais <i class="fas fa-arrow-right"></i></a>
-                </div>
-            </div>
-
-            <div class="blog-card" data-aos="fade-up" data-aos-delay="500">
-                <div class="blog-image">
-                    <img src="https://images.unsplash.com/photo-1505142468610-359e7d316be0?w=800&q=80" alt="Kitesurf">
-                </div>
-                <div class="blog-content">
-                    <div class="blog-meta">
-                        <span>15 Dez 2024</span>
-                        <span data-i18n="cat-dest">Destinos</span>
-                    </div>
-                    <h4 data-i18n="art-5-t">Preá: Capital Mundial do Kitesurf</h4>
-                    <p data-i18n="art-5-d">Entenda por que Preá conquistou kitesurfistas do mundo todo e como isso impacta o turismo e o mercado imobiliário local.</p>
-                    <a href="#" class="blog-link" data-i18n="btn-read">Ler Mais <i class="fas fa-arrow-right"></i></a>
-                </div>
-            </div>
-
-            <div class="blog-card" data-aos="fade-up" data-aos-delay="600">
-                <div class="blog-image">
-                    <img src="https://images.unsplash.com/photo-1551434678-e076c223a692?w=800&q=80" alt="Tecnologia">
-                </div>
-                <div class="blog-content">
-                    <div class="blog-meta">
-                        <span>10 Dez 2024</span>
-                        <span data-i18n="cat-tech">Tecnologia</span>
-                    </div>
-                    <h4 data-i18n="art-6-t">Geotecnologia Revoluciona Vendas de Imóveis</h4>
-                    <p data-i18n="art-6-d">Como mapas interativos e geolocalização estão transformando a forma de comprar e vender propriedades.</p>
-                    <a href="#" class="blog-link" data-i18n="btn-read">Ler Mais <i class="fas fa-arrow-right"></i></a>
-                </div>
-            </div>
-
-            <div class="blog-card" data-aos="fade-up" data-aos-delay="700">
-                <div class="blog-image">
-                    <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&q=80" alt="Tatajuba">
-                </div>
-                <div class="blog-content">
-                    <div class="blog-meta">
-                        <span>05 Dez 2024</span>
-                        <span data-i18n="cat-dest">Destinos</span>
-                    </div>
-                    <h4 data-i18n="art-7-t">Tatajuba: Natureza Intocada e Oportunidades</h4>
-                    <p data-i18n="art-7-d">Explore as dunas, lagoas e o potencial de investimento em uma das regiões mais preservadas do Ceará.</p>
-                    <a href="#" class="blog-link" data-i18n="btn-read">Ler Mais <i class="fas fa-arrow-right"></i></a>
-                </div>
-            </div>
-
-            <div class="blog-card" data-aos="fade-up" data-aos-delay="800">
-                <div class="blog-image">
-                    <img src="https://images.unsplash.com/photo-1560179707-f14e90ef3623?w=800&q=80" alt="Arquitetura">
-                </div>
-                <div class="blog-content">
-                    <div class="blog-meta">
-                        <span>01 Dez 2024</span>
-                        <span data-i18n="cat-life">Lifestyle</span>
-                    </div>
-                    <h4 data-i18n="art-8-t">Arquitetura Sustentável no Litoral Cearense</h4>
-                    <p data-i18n="art-8-d">Tendências em construção sustentável que respeitam o meio ambiente e agregam valor aos imóveis.</p>
-                    <a href="#" class="blog-link" data-i18n="btn-read">Ler Mais <i class="fas fa-arrow-right"></i></a>
-                </div>
-            </div>
-
-            <div class="blog-card" data-aos="fade-up" data-aos-delay="900">
-                <div class="blog-image">
-                    <img src="https://images.unsplash.com/photo-1473496169904-658ba7c44d8a?w=800&q=80" alt="Camocim">
-                </div>
-                <div class="blog-content">
-                    <div class="blog-meta">
-                        <span>25 Nov 2024</span>
-                        <span data-i18n="cat-dest">Destinos</span>
-                    </div>
-                    <h4 data-i18n="art-9-t">Camocim: Infraestrutura e Desenvolvimento</h4>
-                    <p data-i18n="art-9-d">A cidade que é porta de entrada para a Rota das Emoções e oferece toda infraestrutura necessária para investidores.</p>
-                    <a href="#" class="blog-link" data-i18n="btn-read">Ler Mais <i class="fas fa-arrow-right"></i></a>
-                </div>
-            </div>
-        </div>
-
-        <div style="text-align: center; margin-top: 4rem;">
-            <a href="#" class="btn btn-gold" data-i18n="btn-load">Carregar Mais Artigos</a>
         </div>
     </section>
 
@@ -419,10 +282,11 @@
         <div data-aos="fade-up">
             <h3 data-i18n="news-title">Fique Por Dentro</h3>
             <p data-i18n="news-text">Receba novidades, insights e oportunidades exclusivas direto no seu email</p>
-            <div class="newsletter-form">
-                <input type="email" placeholder="Seu melhor e-mail">
+            <form class="newsletter-form" onsubmit="subscribeNewsletter(event)">
+                <input type="email" id="newsletterEmail" placeholder="Seu melhor e-mail" required>
                 <button type="submit" data-i18n="btn-sub">Inscrever</button>
-            </div>
+            </form>
+            <p id="newsletterMessage" style="margin-top: 1rem; font-size: 0.9rem; display: none;"></p>
         </div>
     </section>
 
@@ -454,7 +318,16 @@
     <script>
         AOS.init({ duration: 1000, once: true });
 
-        // HEADER & BOTÃO SCROLL
+        // SUPABASE CONFIG
+        const SUPABASE_URL = 'https://isbiaabccbpydkifexwy.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlzYmlhYWJjY2JweWRraWZleHd5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA0NTUxMzgsImV4cCI6MjA3NjAzMTEzOH0.z__PYEHlpT2JO-3db-_sb0O9cFnMWdoye_X0gcaV7mc';
+        
+        const { createClient } = supabase;
+        const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        let currentLang = 'pt';
+
+        // HEADER SCROLL
         window.addEventListener('scroll', () => {
             const header = document.getElementById('header');
             if (window.scrollY > 50) {
@@ -482,29 +355,188 @@
             });
         }
 
-        // Tradução
+        // CARREGAR ARTIGOS
+        async function loadArticles() {
+            try {
+                const { data: articles, error } = await supabaseClient
+                    .from('articles')
+                    .select('*')
+                    .order('published_date', { ascending: false });
+
+                if (error) throw error;
+
+                const grid = document.getElementById('articlesGrid');
+                
+                if (!articles || articles.length === 0) {
+                    grid.innerHTML = `
+                        <div class="empty-state">
+                            <i class="fas fa-newspaper"></i>
+                            <h3>Em breve novos artigos</h3>
+                            <p>Estamos preparando conteúdo incrível para você!</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                // Artigo em Destaque
+                const featured = articles.find(a => a.featured) || articles[0];
+                if (featured) {
+                    renderFeaturedArticle(featured);
+                }
+
+                // Renderizar grid (excluindo o destaque)
+                grid.innerHTML = '';
+                const regularArticles = articles.filter(a => a.id !== featured.id);
+                
+                regularArticles.forEach(article => {
+                    const card = createArticleCard(article);
+                    grid.appendChild(card);
+                });
+
+            } catch (error) {
+                console.error('Erro ao carregar artigos:', error);
+                document.getElementById('articlesGrid').innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <h3>Erro ao carregar artigos</h3>
+                        <p>Tente novamente mais tarde.</p>
+                    </div>
+                `;
+            }
+        }
+
+        // RENDERIZAR DESTAQUE
+        function renderFeaturedArticle(article) {
+            const section = document.getElementById('featuredSection');
+            const title = currentLang === 'pt' ? article.title_pt : article.title_en;
+            const excerpt = currentLang === 'pt' ? article.excerpt_pt : article.excerpt_en;
+            const category = currentLang === 'pt' ? article.category_pt : article.category_en;
+            const date = new Date(article.published_date).toLocaleDateString('pt-BR');
+
+            section.style.display = 'block';
+            section.innerHTML = `
+                <div class="destaque-grid">
+                    <div class="destaque-image" data-aos="fade-right" onclick="openArticle('${article.slug}')">
+                        <img src="${article.image_url}" alt="${title}">
+                    </div>
+                    <div class="destaque-content" data-aos="fade-left">
+                        <div class="destaque-meta">
+                            <span><i class="far fa-calendar"></i> ${date}</span>
+                            <span><i class="far fa-folder"></i> ${category}</span>
+                            <span><i class="far fa-clock"></i> ${article.read_time} min</span>
+                        </div>
+                        <h2 onclick="openArticle('${article.slug}')">${title}</h2>
+                        <p>${excerpt}</p>
+                        <a class="read-more" onclick="openArticle('${article.slug}')">
+                            Ler Artigo Completo <i class="fas fa-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+            `;
+        }
+
+        // CRIAR CARD DE ARTIGO
+        function createArticleCard(article) {
+            const title = currentLang === 'pt' ? article.title_pt : article.title_en;
+            const excerpt = currentLang === 'pt' ? article.excerpt_pt : article.excerpt_en;
+            const category = currentLang === 'pt' ? article.category_pt : article.category_en;
+            const date = new Date(article.published_date).toLocaleDateString('pt-BR');
+
+            const card = document.createElement('div');
+            card.className = 'blog-card';
+            card.setAttribute('data-aos', 'fade-up');
+            card.onclick = () => openArticle(article.slug);
+
+            card.innerHTML = `
+                <div class="blog-image">
+                    <img src="${article.image_url}" alt="${title}">
+                </div>
+                <div class="blog-content">
+                    <div class="blog-meta">
+                        <span>${date}</span>
+                        <span>${category}</span>
+                    </div>
+                    <h4>${title}</h4>
+                    <p>${excerpt}</p>
+                    <a class="blog-link">Ler Mais <i class="fas fa-arrow-right"></i></a>
+                </div>
+            `;
+
+            return card;
+        }
+
+        // ABRIR ARTIGO (caminho relativo sempre funciona)
+        function openArticle(slug) {
+            window.location.href = `./artigo.html?slug=${slug}`;
+        }
+
+        // ✅ INSCRIÇÃO NA NEWSLETTER
+        async function subscribeNewsletter(event) {
+            event.preventDefault();
+            
+            const emailInput = document.getElementById('newsletterEmail');
+            const message = document.getElementById('newsletterMessage');
+            const button = event.target.querySelector('button');
+            
+            const email = emailInput.value.trim();
+            
+            if (!email) {
+                showNewsletterMessage('Por favor, insira um email válido.', 'error');
+                return;
+            }
+            
+            // Desabilita botão durante envio
+            button.disabled = true;
+            button.textContent = 'Inscrevendo...';
+            
+            try {
+                const { data, error } = await supabaseClient
+                    .from('newsletter_subscribers')
+                    .insert({ email: email });
+                
+                if (error) {
+                    // Se email já existe
+                    if (error.code === '23505') {
+                        showNewsletterMessage('Este email já está inscrito! 😊', 'warning');
+                    } else {
+                        throw error;
+                    }
+                } else {
+                    showNewsletterMessage('✅ Inscrição realizada com sucesso! Obrigado!', 'success');
+                    emailInput.value = '';
+                }
+                
+            } catch (error) {
+                console.error('Erro ao inscrever:', error);
+                showNewsletterMessage('Erro ao processar inscrição. Tente novamente.', 'error');
+            } finally {
+                button.disabled = false;
+                button.textContent = currentLang === 'pt' ? 'Inscrever' : 'Subscribe';
+            }
+        }
+
+        function showNewsletterMessage(text, type) {
+            const message = document.getElementById('newsletterMessage');
+            message.textContent = text;
+            message.style.display = 'block';
+            message.style.color = type === 'success' ? '#fff' : type === 'error' ? '#ff6b6b' : '#ffd93d';
+            
+            setTimeout(() => {
+                message.style.display = 'none';
+            }, 5000);
+        }
+
+        // TRADUÇÃO
         const translations = {
             en: {
                 "nav-home": "Home", "nav-invest": "Investment", "nav-tech": "Technology", "nav-brokers": "Brokers", "nav-blog": "Blog", "nav-lots": "Subdivisions", "nav-dest": "Destinations", "nav-life": "Lifestyle", "btn-map": "Access Map",
                 "hero-sub": "IMAP ONE BLOG", "hero-title": "News & Insights", "hero-text": "Stay up to date with the latest real estate market trends in the region",
-                "cat-all": "All", "cat-market": "Market", "cat-invest": "Investment", "cat-life": "Lifestyle", "cat-tech": "Technology", "cat-dest": "Destinations",
-                "feat-title": "Preá: The New Pearl of the Coast", "feat-text": "Discover why Preá is becoming the preferred destination for national and international investors.",
-                "btn-read": "Read Full Article", "label-recent": "RECENT ARTICLES", "recent-title": "Latest Posts",
-                "art-1-t": "Complete Guide: Investing in Coastal Land", "art-1-d": "Everything you need to know before investing in coastal properties.",
-                "art-2-t": "Living in Jeri: More than a Dream", "art-2-d": "Stories of those who swapped the city for tranquility.",
-                "art-3-t": "Jeri Airport: Real Estate Impact", "art-3-d": "How the airport expansion boosts property values.",
-                "art-4-t": "Renewable Energy Attracts Investors", "art-4-d": "Wind and solar parks are transforming Ceará.",
-                "art-5-t": "Preá: World Kitesurf Capital", "art-5-d": "Why Preá conquered kitesurfers globally.",
-                "art-6-t": "Geotechnology Revolutions Sales", "art-6-d": "How interactive maps change buying and selling.",
-                "art-7-t": "Tatajuba: Untouched Nature", "art-7-d": "Explore dunes and investment potential.",
-                "art-8-t": "Sustainable Architecture", "art-8-d": "Trends in sustainable construction.",
-                "art-9-t": "Camocim: Infrastructure & Development", "art-9-d": "The gateway to Route of Emotions.",
-                "btn-load": "Load More Articles", "news-title": "Stay Updated", "news-text": "Receive news and opportunities in your email", "btn-sub": "Subscribe",
+                "label-recent": "RECENT ARTICLES", "recent-title": "Latest Posts",
+                "news-title": "Stay Updated", "news-text": "Receive news and opportunities in your email", "btn-sub": "Subscribe",
                 "footer-text": "Real estate innovation on the coast of Ceará", "nav-map": "Property Map"
             }
         };
 
-        let currentLang = 'pt';
         function toggleLanguage() {
             const btn = document.getElementById('lang-toggle');
             if (currentLang === 'pt') {
@@ -514,8 +546,14 @@
                     const key = el.getAttribute('data-i18n');
                     if (translations.en[key]) el.innerHTML = translations.en[key];
                 });
-            } else { window.location.reload(); }
+                loadArticles(); // Recarrega com idioma novo
+            } else { 
+                window.location.reload(); 
+            }
         }
+
+        // INICIALIZAR
+        loadArticles();
     </script>
 </body>
 </html>

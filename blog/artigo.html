@@ -6,28 +6,29 @@
     <title id="pageTitle">Artigo | Imap One Blog</title>
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
     
-    <!-- Supabase -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
     <style>
         :root {
-            --primary: #D4AF37;
-            --primary-hover: #b8941e;
-            --dark: #121212;
-            --dark-gray: #181818;
-            --text-gray: #666666;
-            --white: #FFFFFF;
+            --gold: #D4AF37;
+            --gold-dark: #b8941e;
+            --black: #0A0A0A;
+            --gray-dark: #141414;
+            --gray-medium: #1A1A1A;
+            --white: #FAFAFA;
+            --text-gray: #999;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
         
         body {
-            font-family: 'Montserrat', sans-serif;
-            background-color: var(--white);
-            color: #333;
+            font-family: 'Inter', sans-serif;
+            background-color: var(--black);
+            color: var(--white);
             line-height: 1.8;
+            font-weight: 300;
         }
 
         /* HEADER */
@@ -40,37 +41,39 @@
             justify-content: space-between;
             align-items: center;
             z-index: 1000;
-            background: rgba(255, 255, 255, 0.98);
-            border-bottom: 1px solid #eee;
+            background: rgba(10, 10, 10, 0.9);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
             backdrop-filter: blur(10px);
         }
 
         .logo { 
-            font-size: 1.2rem; 
+            font-size: 1.1rem; 
             font-weight: 700; 
-            letter-spacing: 3px; 
-            color: var(--dark); 
-            text-transform: uppercase; 
+            letter-spacing: 1px; 
+            color: var(--white); 
+            text-transform: uppercase;
+            font-family: 'Montserrat', sans-serif;
         }
-        .logo span { color: var(--primary); }
+        .logo span { color: var(--gold); }
 
         .back-btn {
             display: inline-flex;
             align-items: center;
             gap: 0.5rem;
-            padding: 0.8rem 1.5rem;
-            background: var(--primary);
-            color: #000;
-            font-weight: 600;
+            padding: 0.7rem 1.5rem;
+            background: transparent;
+            color: var(--gold);
+            font-weight: 500;
             text-transform: uppercase;
-            font-size: 0.85rem;
-            letter-spacing: 1px;
-            border-radius: 30px;
-            transition: 0.3s;
+            font-size: 0.75rem;
+            letter-spacing: 2px;
+            border: 1px solid var(--gold);
+            transition: 0.4s ease;
             text-decoration: none;
         }
         .back-btn:hover {
-            background: var(--primary-hover);
+            background: var(--gold);
+            color: var(--black);
             transform: translateX(-5px);
         }
 
@@ -86,6 +89,7 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
+            opacity: 0.8;
         }
 
         .article-hero-overlay {
@@ -93,36 +97,38 @@
             bottom: 0;
             left: 0;
             right: 0;
-            padding: 3rem 5%;
-            background: linear-gradient(transparent, rgba(0,0,0,0.8));
+            padding: 4rem 5%;
+            background: linear-gradient(to top, var(--black) 10%, transparent);
             color: white;
         }
 
         .article-category {
             display: inline-block;
-            padding: 0.5rem 1rem;
-            background: var(--primary);
-            color: #000;
+            padding: 0.4rem 0;
+            color: var(--gold);
             font-weight: 600;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             text-transform: uppercase;
-            letter-spacing: 1px;
+            letter-spacing: 2px;
             margin-bottom: 1rem;
-            border-radius: 3px;
+            border-bottom: 1px solid var(--gold);
         }
 
         .article-hero h1 {
-            font-family: 'Playfair Display', serif;
+            font-family: 'Cormorant Garamond', serif;
             font-size: 3.5rem;
-            line-height: 1.2;
-            margin-bottom: 1rem;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+            font-weight: 400;
+            text-shadow: 0 4px 20px rgba(0,0,0,0.5);
         }
 
         .article-meta {
             display: flex;
             gap: 2rem;
-            font-size: 0.9rem;
-            color: rgba(255,255,255,0.8);
+            font-size: 0.85rem;
+            color: rgba(255,255,255,0.7);
+            font-weight: 300;
         }
 
         /* CONTEÚDO */
@@ -131,53 +137,59 @@
             margin: 4rem auto;
             padding: 0 5%;
             font-size: 1.1rem;
-            color: #333;
+            color: rgba(255,255,255,0.85);
+            font-weight: 300;
         }
 
         .article-content p {
-            margin-bottom: 1.5rem;
+            margin-bottom: 2rem;
             line-height: 1.9;
         }
 
         .article-content h2 {
-            font-family: 'Playfair Display', serif;
-            font-size: 2rem;
-            margin-top: 3rem;
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 2.2rem;
+            margin-top: 4rem;
             margin-bottom: 1.5rem;
-            color: var(--dark);
+            color: var(--white);
+            font-weight: 400;
         }
 
         .article-content h3 {
-            font-family: 'Playfair Display', serif;
-            font-size: 1.5rem;
-            margin-top: 2rem;
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.8rem;
+            margin-top: 3rem;
             margin-bottom: 1rem;
-            color: var(--dark);
+            color: var(--gold);
         }
 
         .article-content ul, .article-content ol {
             margin-left: 2rem;
-            margin-bottom: 1.5rem;
+            margin-bottom: 2rem;
+            color: var(--text-gray);
         }
 
         .article-content li {
             margin-bottom: 0.8rem;
+            padding-left: 0.5rem;
         }
 
         .article-content blockquote {
-            border-left: 4px solid var(--primary);
+            border-left: 3px solid var(--gold);
             padding-left: 2rem;
-            margin: 2rem 0;
+            margin: 3rem 0;
             font-style: italic;
-            color: var(--text-gray);
-            font-size: 1.2rem;
+            color: var(--gold);
+            font-size: 1.3rem;
+            font-family: 'Cormorant Garamond', serif;
         }
 
         .article-content img {
             width: 100%;
             height: auto;
-            border-radius: 8px;
-            margin: 2rem 0;
+            border: 1px solid rgba(255,255,255,0.1);
+            margin: 3rem 0;
+            display: block;
         }
 
         /* LOADING */
@@ -188,26 +200,29 @@
             justify-content: center;
             min-height: 60vh;
             gap: 1rem;
+            color: var(--text-gray);
         }
 
         .loading-container i {
             font-size: 3rem;
-            color: var(--primary);
+            color: var(--gold);
         }
 
         /* COMPARTILHAR */
         .share-section {
             max-width: 800px;
-            margin: 3rem auto;
-            padding: 2rem;
-            background: #f8f8f8;
-            border-radius: 8px;
+            margin: 4rem auto;
+            padding: 3rem;
+            background: var(--gray-dark);
+            border: 1px solid rgba(255,255,255,0.05);
             text-align: center;
         }
 
         .share-section h3 {
-            font-family: 'Playfair Display', serif;
-            margin-bottom: 1rem;
+            font-family: 'Cormorant Garamond', serif;
+            margin-bottom: 1.5rem;
+            font-size: 1.5rem;
+            color: var(--white);
         }
 
         .share-buttons {
@@ -222,42 +237,42 @@
             align-items: center;
             gap: 0.5rem;
             padding: 0.8rem 1.5rem;
-            border-radius: 30px;
-            font-weight: 600;
+            font-weight: 500;
             text-decoration: none;
-            transition: 0.3s;
+            transition: 0.4s ease;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border: 1px solid transparent;
+            color: var(--black);
         }
 
-        .share-btn.whatsapp { background: #25D366; color: white; }
-        .share-btn.whatsapp:hover { background: #1da851; }
+        .share-btn.whatsapp { background: #25D366; }
+        .share-btn.whatsapp:hover { background: transparent; color: #25D366; border-color: #25D366; }
 
         .share-btn.facebook { background: #1877F2; color: white; }
-        .share-btn.facebook:hover { background: #145dbf; }
+        .share-btn.facebook:hover { background: transparent; color: #1877F2; border-color: #1877F2; }
 
         .share-btn.linkedin { background: #0A66C2; color: white; }
-        .share-btn.linkedin:hover { background: #084d8f; }
+        .share-btn.linkedin:hover { background: transparent; color: #0A66C2; border-color: #0A66C2; }
 
         /* FOOTER */
         footer { 
-            background: #050505; 
+            background: var(--gray-dark); 
             padding: 3rem 5% 1.5rem; 
             text-align: center; 
-            color: #999;
-            border-top: 1px solid #222;
+            color: var(--text-gray);
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            font-size: 0.85rem;
         }
 
-        footer p { margin: 0; }
-
-        #lang-toggle:hover { 
-            background: #D4AF37; 
-            color: #000; 
-        }
+        footer p { margin: 0; font-weight: 300; }
 
         /* RESPONSIVE */
         @media (max-width: 768px) {
-            .article-hero h1 { font-size: 2rem; }
+            .article-hero h1 { font-size: 2.2rem; }
             .article-content { font-size: 1rem; }
-            .back-btn { font-size: 0.75rem; padding: 0.6rem 1.2rem; }
+            .back-btn { font-size: 0.65rem; padding: 0.5rem 1rem; }
         }
     </style>
 </head>
@@ -266,7 +281,7 @@
     <header>
         <a href="index.html" class="logo">IMAP<span>ONE</span></a>
         <div style="display: flex; gap: 1rem; align-items: center;">
-            <div id="lang-toggle" onclick="toggleLanguage()" style="width: 40px; height: 40px; border: 1px solid #D4AF37; color: #D4AF37; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.75rem; cursor: pointer; transition: all 0.3s ease; background: transparent;">PT</div>
+            <div id="lang-toggle" onclick="toggleLanguage()" style="width: 35px; height: 35px; border: 1px solid var(--gold); color: var(--gold); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 0.7rem; cursor: pointer; transition: all 0.3s ease; background: transparent;">PT</div>
             <a href="index.html" class="back-btn">
                 <i class="fas fa-arrow-left"></i> <span id="btnBack">Voltar ao Blog</span>
             </a>
@@ -319,7 +334,7 @@
                 // Armazena o artigo para tradução
                 currentArticle = article;
 
-                // ✅ INCREMENTAR VISUALIZAÇÃO AUTOMATICAMENTE
+                // INCREMENTAR VISUALIZAÇÃO AUTOMATICAMENTE
                 await incrementView(article.id, article.views || 0);
 
                 renderArticle(article);
@@ -328,7 +343,7 @@
                 console.error('Erro:', error);
                 document.getElementById('articleContainer').innerHTML = `
                     <div class="loading-container">
-                        <i class="fas fa-exclamation-triangle" style="color: #dc3545;"></i>
+                        <i class="fas fa-exclamation-triangle" style="color: var(--red);"></i>
                         <h2>Artigo não encontrado</h2>
                         <p>O artigo que você procura não existe ou foi removido.</p>
                         <a href="index.html" class="back-btn" style="margin-top: 1rem;">Voltar ao Blog</a>
@@ -337,7 +352,7 @@
             }
         }
 
-        // ✅ INCREMENTAR VISUALIZAÇÃO
+        // INCREMENTAR VISUALIZAÇÃO
         async function incrementView(articleId, currentViews) {
             try {
                 await supabaseClient
@@ -398,14 +413,11 @@
             `;
         }
 
-        // FORMATAR CONTEÚDO (converte quebras de linha em parágrafos)
+        // FORMATAR CONTEÚDO
         function formatContent(content) {
-            // Se o conteúdo já tem tags HTML, retorna direto
             if (content.includes('<p>') || content.includes('<h2>')) {
                 return content;
             }
-
-            // Senão, converte quebras de linha em parágrafos
             return content
                 .split('\n\n')
                 .filter(p => p.trim())
@@ -413,7 +425,7 @@
                 .join('');
         }
 
-        // ✅ TRADUÇÃO
+        // TRADUÇÃO
         const translations = {
             en: {
                 btnBack: "Back to Blog"
@@ -426,14 +438,8 @@
             if (currentLang === 'pt') {
                 currentLang = 'en';
                 btn.textContent = 'EN';
-                
-                // Traduz botão
                 document.getElementById('btnBack').textContent = translations.en.btnBack;
-                
-                // Recarrega artigo no idioma novo
-                if (currentArticle) {
-                    renderArticle(currentArticle);
-                }
+                if (currentArticle) { renderArticle(currentArticle); }
             } else {
                 window.location.reload();
             }
